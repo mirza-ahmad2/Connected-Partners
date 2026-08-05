@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { ShieldCheck, Compass, Cpu, HeartHandshake } from "lucide-react";
 import { Hero } from "@/components/site/Hero";
 import { ComplianceDisclaimer } from "@/components/site/ComplianceDisclaimer";
@@ -27,6 +28,32 @@ const values = [
 ];
 
 function AboutPage() {
+  const founderTextRef = useRef<HTMLDivElement>(null);
+  const [founderImageHeight, setFounderImageHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = founderTextRef.current;
+    if (!el) return;
+
+    const syncHeight = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        setFounderImageHeight(el.offsetHeight);
+      } else {
+        setFounderImageHeight(null);
+      }
+    };
+
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(el);
+    window.addEventListener("resize", syncHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", syncHeight);
+    };
+  }, []);
+
   return (
     <>
       <Hero
@@ -37,14 +64,15 @@ function AboutPage() {
       />
 
       <section className="container-site py-24 md:py-32" aria-labelledby="founder-heading">
-        <div className="grid gap-10 md:grid-cols-2 md:items-stretch md:gap-16 lg:gap-20">
+        <div className="grid gap-10 md:grid-cols-2 md:items-start md:gap-16 lg:gap-20">
           <SectionReveal className="h-full">
             <motion.figure
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="h-full overflow-hidden rounded-md border border-border bg-surface/60 shadow-xl max-md:aspect-[4/5]"
+              style={founderImageHeight ? { height: founderImageHeight } : undefined}
+              className="overflow-hidden rounded-md border border-border bg-surface/60 shadow-xl max-md:aspect-[4/5]"
             >
               <img
                 src="/founder-khenan.png"
@@ -59,7 +87,7 @@ function AboutPage() {
           </SectionReveal>
 
           <SectionReveal delay={0.1}>
-            <div>
+            <div ref={founderTextRef}>
               <p className="mb-3 text-xs uppercase tracking-[0.28em] text-accent">Founder</p>
               <h2 id="founder-heading" className="font-display text-3xl leading-tight md:text-4xl">
                 Khenan Kheith
