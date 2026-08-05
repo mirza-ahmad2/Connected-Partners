@@ -9,13 +9,6 @@ import { buildPageHead } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site-config";
 import heroImpact from "@/assets/hero-impact.jpg";
 
-const homeSections = [
-  { id: "about", label: "About" },
-  { id: "services", label: "Services" },
-  { id: "impact", label: "Social Impact" },
-  { id: "contact-cta", label: "Contact" },
-] as const;
-
 export const Route = createFileRoute("/")({
   head: () =>
     buildPageHead({
@@ -80,20 +73,6 @@ function HomePage() {
               Our services <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </motion.div>
-
-          <motion.nav
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.55 }}
-            className="mt-12 flex flex-wrap items-center justify-center gap-3"
-            aria-label="Home page sections"
-          >
-            {homeSections.map((section) => (
-              <a key={section.id} href={`#${section.id}`} className="home-nav-pill">
-                {section.label}
-              </a>
-            ))}
-          </motion.nav>
         </div>
       </section>
 
